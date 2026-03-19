@@ -3,6 +3,10 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'monitor.py'
+      - 'requirements.txt'
+      - 'Dockerfile'
   pull_request:
     branches: [ "main" ]
 
