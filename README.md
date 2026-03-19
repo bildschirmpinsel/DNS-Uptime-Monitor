@@ -27,5 +27,12 @@ The mail configuration is optional. If no API token file is supplied, neither se
 The scheme used in the database is uptime: {[<ins>timestamp</ins>: datetime, <ins>url</ins>: text, dnsdirect: text, dnsrouter: text, reverseproxy: integer]}. The columns `dnsdirect` and `dnsrouter` store the respective DNS answer (IP, `NXDOMAIN`, `TIMEOUT`), while `reverseproxy` stores an http response code (e.g. `200`, `404`). The timestamp of the checks and the checked url together form the primary key.
 
 ## Email 
-The email is send with the subject 'Uptime Changes' and contains the data in a similar format to the database. If a service is checked for the first time or has not been checked since the last time the database was cleared, an email with the current data will always be send. Otherwise, emails will only be send when the current check yielded different results from the last check in the database. Fields that did not experience any changes will be filled with 'No Change' in the email. 
+The email is send with the subject 'Uptime Changes' and contains the data in a similar format to the database. If a service is checked for the first time or has not been checked since the last time the database was cleared, an email with the current data will always be send. Otherwise, emails will only be send when the current check yielded different results from the last check in the database. Fields that did not experience any changes will be filled with 'No Change' in the email.
+
+## Docker
+A docker image is available at DockerHub, which can be pulled via `docker pull bildschirmpinsel/dns-uptime-monitor:latest`. The image can be run for a trial with the following command:
+```bash
+docker run -e UPTIME_URLS=www.google.com -e UPTIME_DNS_SERVER_ADDRESS=9.9.9.9 -e UPTIME_REVERSE_PROXY_ADDRESS=echo.free.beeceptor.com -e UPTIME_DATABASE=/monitor/uptime.db -e UPTIME_RETAIN_TIME_DAYS=2 -e UPTIME_LOG_FILE=/monitor/uptime.log -e UPTIME_LOG_LEVEL=DEBUG -v "$(pwd):/monitor" bildschirmpinsel/dns-uptime-monitor:latest
+```
+The DNS server is the Quad9 server; as a reverse proxy, the beeceptor http echo server is used. These should always yield positive results.
 
