@@ -52,9 +52,9 @@ if __name__ == "__main__":
     #################################
     # Extract environment variables #
     #################################
-    def extract_environment_variable(variable, variable_descriptor):
+    def extract_environment_variable(variable, variable_descriptor, optional=False):
         extracted_value = environ.get(key=variable, default=None)
-        if not extracted_value:
+        if not extracted_value and not optional:
             raise ValueError(f"No {variable_descriptor} found in environment variable {variable}")
         return extracted_value
 
@@ -65,11 +65,12 @@ if __name__ == "__main__":
     database_retain_time_days = int(extract_environment_variable(variable=DATABSE_RETAIN_TIME_ENVIRONMENT_VARIABLE, variable_descriptor="database retain time (in days)"))
     log_file = extract_environment_variable(variable=LOG_FILE_ENVIRONMENT_VARIABLE, variable_descriptor="log file path")
     log_level = environ.get(LOG_LEVEL_ENVIRONMENT_VARIABLE, 'INFO').upper()
-    api_token_file = extract_environment_variable(variable=GMAIL_API_TOKEN_ENVIRONMENT_VARIABLE, variable_descriptor="gmail api token file path")
-    if not path.exists(api_token_file):
-        raise ValueError(f"No api token file found under path {api_token_file}")
-    email_receiver_address = extract_environment_variable(variable=EMAIL_RECEIVER_ADDRESS_ENVIRONMENT_VARIABLE, variable_descriptor="email receiver address")
-    email_sender_address = extract_environment_variable(variable=EMAIL_SENDER_ADDRESS_ENVIRONMENT_VARIABLE, variable_descriptor="email sender address")
+    api_token_file = extract_environment_variable(variable=GMAIL_API_TOKEN_ENVIRONMENT_VARIABLE, variable_descriptor="gmail api token file path", optional=True)
+    if api_token_file:
+        if not path.exists(api_token_file):
+            raise ValueError(f"No api token file found under path {api_token_file}")
+        email_receiver_address = extract_environment_variable(variable=EMAIL_RECEIVER_ADDRESS_ENVIRONMENT_VARIABLE, variable_descriptor="email receiver address")
+        email_sender_address = extract_environment_variable(variable=EMAIL_SENDER_ADDRESS_ENVIRONMENT_VARIABLE, variable_descriptor="email sender address")
 
     ######################
     # Setup of variables #
@@ -240,8 +241,10 @@ if __name__ == "__main__":
         notify_user = True
         insert_values_into_database()
         logger.info("\tInserted New Data Into Database!")
-
-    if notify_user:
+    
+    if not api_token_file:
+        logger.info("No API Token Supplied, Not Sending Email!")
+    if notify_user and api_token_file:
         logger.info("Sending Email...")
         creds = Credentials.from_authorized_user_file(api_token_file, SCOPES)
 

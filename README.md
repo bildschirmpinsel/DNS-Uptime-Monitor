@@ -17,6 +17,8 @@ The script is configured entirely by environment variables:
 - `UPTIME_RETAIN_TIME_DAYS`: Time in days for how long database should retain information for.
 - `UPTIME_LOG_FILE`: File path for log file (e.g. `./uptime.log`).
 - `UPTIME_LOG_LEVEL`: Level to log, allowed values are `INFO|WARNING|ERROR|DEBUG` (as per https://docs.python.org/3/library/logging.html#levels). Default is `INFO`.
+
+The mail configuration is optional. If no API token file is supplied, neither sender nor receiver address will be read and no email will be send. This allows for log/database only usage, where a website could be used to indicate up or down states of services.
 - `UPTIME_GMAIL_TOKEN`: GMail API token file; Can be generated as `token.json` by following this guide https://developers.google.com/workspace/gmail/api/quickstart/python
 - `UPTIME_EMAIL_RECEIVER_ADDRESS`: Address to send emails to.
 - `UPTIME_EMAIL_SENDER_ADDRESS`: Address to send emails from.
