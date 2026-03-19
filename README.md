@@ -22,7 +22,7 @@ The script is configured entirely by environment variables:
 - `UPTIME_EMAIL_SENDER_ADDRESS`: Address to send emails from.
 
 ## Database Scheme
-The scheme used in the database is uptime: {[<ins>timestamp: datetime</ins>, <ins>url</ins>: text, dnsdirect: text, dnsrouter: text, reverseproxy: integer]}. The columns `dnsdirect` and `dnsrouter` store the respective DNS answer (IP, `NXDOMAIN`, `TIMEOUT`), while `reverseproxy` stores an http response code. The timestamp of the checks and the checked url together form the primary key.
+The scheme used in the database is uptime: {[<ins>timestamp</ins>: datetime, <ins>url</ins>: text, dnsdirect: text, dnsrouter: text, reverseproxy: integer]}. The columns `dnsdirect` and `dnsrouter` store the respective DNS answer (IP, `NXDOMAIN`, `TIMEOUT`), while `reverseproxy` stores an http response code (e.g. `200`, `404`). The timestamp of the checks and the checked url together form the primary key.
 
 ## Email 
 The email is send with the subject 'Uptime Changes' and contains the data in a similar format to the database. If a service is checked for the first time or has not been checked since the last time the database was cleared, an email with the current data will always be send. Otherwise, emails will only be send when the current check yielded different results from the last check in the database. Fields that did not experience any changes will be filled with 'No Change' in the email. 
